@@ -2,8 +2,8 @@
 
 module.exports = {
   identity: {
-    name: 'Iccu API',
-    tagline: 'One address book for every endpoint you maintain.',
+    name: 'ICCU APIS',
+    tagline: 'Rest API simple, free, dan 100% lebih lengkap.',
     version: '1.0.0'
   },
   groups: {

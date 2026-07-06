@@ -6,11 +6,12 @@
   const logEl = el('log');
   const railNav = el('railNav');
   const filterInput = el('filterInput');
+  const aiFilterInput = el('aiFilterInput');
   const copyBaseBtn = el('copyBaseBtn');
 
   let manifest = null;
   let routes = [];
-  let activeGroup = 'all';
+  let activeMode = 'all'; // 'all' | 'ai' | 'search'
 
   function groupLabel(key) {
     return manifest.groups[key]?.label || key;
@@ -42,12 +43,13 @@
     }
     if (btn) {
       const original = btn.innerHTML;
-      const isIconBtn = btn.querySelector('span');
+      const labelSpan = btn.querySelector('span:not(.icon-copy)');
       btn.classList.add('copied');
-      if (isIconBtn) {
-        isIconBtn.textContent = 'Tersalin!';
+      if (labelSpan) {
+        labelSpan.textContent = 'Tersalin!';
       } else {
-        btn.textContent = 'Tersalin!';
+        // Tombol icon-only (tidak ada label teks): tampilkan tanda centang sementara.
+        btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       }
       setTimeout(() => {
         btn.classList.remove('copied');
@@ -75,31 +77,19 @@
   }
 
   function renderRail() {
-    railNav.innerHTML = '';
+    // Sidebar sekarang 3 kotak statis dan simple: Semua endpoint / AI / Search.
+    const countAll = routes.length;
+    const countAi = routes.filter((r) => r.group === 'ai').length;
+    const countSearch = routes.filter((r) => r.group === 'search').length;
 
-    const allBtn = document.createElement('button');
-    allBtn.className = 'rail-item active';
-    allBtn.dataset.group = 'all';
-    allBtn.innerHTML = `<span>Semua endpoint</span><span class="count">${routes.length}</span>`;
-    railNav.appendChild(allBtn);
-
-    const groups = [...new Set(routes.map((r) => r.group))].sort(
-      (a, b) => groupOrder(a) - groupOrder(b)
-    );
-
-    groups.forEach((g) => {
-      const count = routes.filter((r) => r.group === g).length;
-      const btn = document.createElement('button');
-      btn.className = 'rail-item';
-      btn.dataset.group = g;
-      btn.innerHTML = `<span>${groupLabel(g)}</span><span class="count">${count}</span>`;
-      railNav.appendChild(btn);
-    });
+    el('countAll').textContent = countAll;
+    el('countAi').textContent = countAi;
+    el('countSearch').textContent = countSearch;
 
     railNav.addEventListener('click', (e) => {
       const btn = e.target.closest('.rail-item');
       if (!btn) return;
-      activeGroup = btn.dataset.group;
+      activeMode = btn.dataset.mode;
       [...railNav.children].forEach((c) => c.classList.toggle('active', c === btn));
       renderLog();
     });
@@ -107,6 +97,7 @@
 
   function renderLog() {
     const term = filterInput.value.trim().toLowerCase();
+    const aiTerm = aiFilterInput.value.trim().toLowerCase();
     logEl.innerHTML = '';
 
     const groups = [...new Set(routes.map((r) => r.group))].sort(
@@ -114,12 +105,19 @@
     );
 
     groups.forEach((g) => {
-      if (activeGroup !== 'all' && activeGroup !== g) return;
+      if (activeMode !== 'all' && activeMode !== g) return;
 
       const items = routes.filter((r) => {
         if (r.group !== g) return false;
-        if (!term) return true;
-        return r.name.toLowerCase().includes(term) || r.path.toLowerCase().includes(term);
+        if (term && !(r.name.toLowerCase().includes(term) || r.path.toLowerCase().includes(term))) {
+          return false;
+        }
+        if (aiTerm) {
+          const haystack = `${r.name} ${r.path} ${r.description}`.toLowerCase();
+          const words = aiTerm.split(/\s+/).filter(Boolean);
+          if (!words.some((w) => haystack.includes(w))) return false;
+        }
+        return true;
       });
 
       if (!items.length) return;
@@ -134,9 +132,7 @@
 
     if (!logEl.children.length) {
       const empty = document.createElement('p');
-      empty.style.color = 'var(--text-faint)';
-      empty.style.fontSize = '14px';
-      empty.style.fontWeight = '500';
+      empty.className = 'empty-state';
       empty.textContent = 'Tidak ada endpoint yang cocok dengan pencarian itu.';
       logEl.appendChild(empty);
     }
@@ -233,11 +229,21 @@
 
       resultBox.hidden = false;
       resultLoading.hidden = false;
+      resultLoading.classList.remove('is-done');
       resultHead.hidden = true;
       resultJson.hidden = true;
       resultImage.hidden = true;
       runBtn.disabled = true;
       timingEl.hidden = true;
+
+      // Safety valve: kalau karena sesuatu hal request menggantung lebih
+      // dari 20 detik, paksa keluar dari state loading supaya spinner
+      // tidak berputar selamanya.
+      const stopLoading = () => {
+        resultLoading.hidden = true;
+        runBtn.disabled = false;
+      };
+      const safetyTimeout = setTimeout(stopLoading, 20000);
 
       const startedAt = performance.now();
 
@@ -290,8 +296,8 @@
         resultJson.hidden = false;
         lastResultText = message;
       } finally {
-        resultLoading.hidden = true;
-        runBtn.disabled = false;
+        clearTimeout(safetyTimeout);
+        stopLoading();
       }
     });
 
@@ -299,6 +305,7 @@
   }
 
   filterInput.addEventListener('input', renderLog);
+  aiFilterInput.addEventListener('input', renderLog);
 
   copyBaseBtn.addEventListener('click', () => {
     copyText(window.location.origin, copyBaseBtn);
