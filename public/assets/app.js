@@ -141,7 +141,6 @@
     const fieldsEl = node.querySelector('.fields');
     const runBtn = node.querySelector('.run-btn');
     const builtUrl = node.querySelector('.built-url');
-    const copyEndpointBtn = node.querySelector('.copy-endpoint-btn');
     const resultBox = node.querySelector('.result');
     const resultLoading = node.querySelector('.result-loading');
     const resultHead = node.querySelector('.result-head');
@@ -189,10 +188,6 @@
 
     node.querySelector('.row-head').addEventListener('click', () => {
       node.classList.toggle('open');
-    });
-
-    copyEndpointBtn.addEventListener('click', () => {
-      copyText(currentUrl, copyEndpointBtn);
     });
 
     copyResultBtn.addEventListener('click', () => {
