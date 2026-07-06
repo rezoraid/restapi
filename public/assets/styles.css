@@ -176,23 +176,12 @@ button {
 }
 
 .search-cluster {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
   margin-bottom: 36px;
 }
 
 .search-row {
   position: relative;
   margin-bottom: 0;
-}
-
-.search-row-ai input { padding-left: 44px; }
-.search-row-ai .search-icon { color: var(--accent); }
-.search-row-ai input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-
-@media (max-width: 640px) {
-  .search-cluster { grid-template-columns: 1fr; }
 }
 
 .search-icon {
@@ -382,12 +371,12 @@ button {
 .endpoint-box {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 16px;
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--panel);
-  padding: 4px 6px 4px 14px;
+  padding: 8px 8px 8px 14px;
 }
 
 .endpoint-label {
@@ -415,17 +404,17 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-dim);
-  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-faint);
+  transition: background 0.12s ease, color 0.12s ease;
 }
 
-.copy-endpoint-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-.copy-endpoint-btn.copied { background: var(--good); color: #fff; border-color: var(--good); }
+.copy-endpoint-btn:hover { background: var(--border); color: var(--text); }
+.copy-endpoint-btn.copied { background: var(--good); color: #fff; }
 
 /* Actions -------------------------------------------------------------- */
 .row-actions {
@@ -451,31 +440,6 @@ button {
 .run-btn:hover { background: var(--accent-hover); }
 .run-btn:active { transform: scale(0.98); }
 .run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.timing {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--mono);
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-dim);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  padding: 8px 13px;
-  border-radius: var(--radius-sm);
-}
-
-.timing-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--good);
-  flex-shrink: 0;
-}
-
-.timing.slow .timing-dot { background: #E0A22B; }
-.timing.slow .timing-ms { color: #B87A12; }
 
 /* Result box ------------------------------------------------------------ */
 .result {

@@ -6,7 +6,6 @@
   const logEl = el('log');
   const railNav = el('railNav');
   const filterInput = el('filterInput');
-  const aiFilterInput = el('aiFilterInput');
   const copyBaseBtn = el('copyBaseBtn');
 
   let manifest = null;
@@ -97,7 +96,6 @@
 
   function renderLog() {
     const term = filterInput.value.trim().toLowerCase();
-    const aiTerm = aiFilterInput.value.trim().toLowerCase();
     logEl.innerHTML = '';
 
     const groups = [...new Set(routes.map((r) => r.group))].sort(
@@ -111,11 +109,6 @@
         if (r.group !== g) return false;
         if (term && !(r.name.toLowerCase().includes(term) || r.path.toLowerCase().includes(term))) {
           return false;
-        }
-        if (aiTerm) {
-          const haystack = `${r.name} ${r.path} ${r.description}`.toLowerCase();
-          const words = aiTerm.split(/\s+/).filter(Boolean);
-          if (!words.some((w) => haystack.includes(w))) return false;
         }
         return true;
       });
@@ -149,8 +142,6 @@
     const runBtn = node.querySelector('.run-btn');
     const builtUrl = node.querySelector('.built-url');
     const copyEndpointBtn = node.querySelector('.copy-endpoint-btn');
-    const timingEl = node.querySelector('.timing');
-    const timingMs = node.querySelector('.timing-ms');
     const resultBox = node.querySelector('.result');
     const resultLoading = node.querySelector('.result-loading');
     const resultHead = node.querySelector('.result-head');
@@ -234,7 +225,6 @@
       resultJson.hidden = true;
       resultImage.hidden = true;
       runBtn.disabled = true;
-      timingEl.hidden = true;
 
       // Safety valve: kalau karena sesuatu hal request menggantung lebih
       // dari 20 detik, paksa keluar dari state loading supaya spinner
@@ -251,10 +241,6 @@
         const response = await fetch(url);
         const elapsedMs = Math.round(performance.now() - startedAt);
         const contentType = response.headers.get('Content-Type') || '';
-
-        timingEl.hidden = false;
-        timingMs.textContent = `${elapsedMs} ms`;
-        timingEl.classList.toggle('slow', elapsedMs > 1500);
 
         resultStatus.textContent = response.status;
         resultStatus.classList.toggle('err', !response.ok);
@@ -281,9 +267,6 @@
         resultHead.hidden = false;
       } catch (err) {
         const elapsedMs = Math.round(performance.now() - startedAt);
-        timingEl.hidden = false;
-        timingMs.textContent = `${elapsedMs} ms`;
-        timingEl.classList.add('slow');
 
         resultHead.hidden = false;
         resultStatus.textContent = 'Gagal';
@@ -305,7 +288,6 @@
   }
 
   filterInput.addEventListener('input', renderLog);
-  aiFilterInput.addEventListener('input', renderLog);
 
   copyBaseBtn.addEventListener('click', () => {
     copyText(window.location.origin, copyBaseBtn);
