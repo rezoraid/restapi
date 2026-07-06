@@ -465,6 +465,13 @@ button {
   gap: 10px;
 }
 
+.result-loading[hidden],
+.result-head[hidden],
+.result-json[hidden],
+.result-image[hidden] {
+  display: none;
+}
+
 .spinner {
   width: 14px;
   height: 14px;
