@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gateway</title>
+<link rel="icon" href="data:," />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<div class="frame">
+
+  <aside class="rail">
+    <div class="rail-top">
+      <div class="mark">
+        <span class="mark-dot" aria-hidden="true"></span>
+        <span class="mark-text">gateway</span>
+      </div>
+      <p class="rail-tagline" id="tagline"></p>
+    </div>
+
+    <nav class="rail-nav" id="railNav" aria-label="Endpoint groups"></nav>
+
+    <div class="rail-bottom">
+      <div class="rail-stat">
+        <span id="routeCount">0</span> routes online
+      </div>
+      <a href="/manifest.json" class="rail-link">manifest.json</a>
+    </div>
+  </aside>
+
+  <main class="stage">
+
+    <header class="stage-head">
+      <h1>Every endpoint, one line each.</h1>
+      <p>Pick a route, fill what it asks for, run it. Responses render right where you clicked.</p>
+      <div class="search-row">
+        <input id="filterInput" type="text" placeholder="Filter by name or path" autocomplete="off" />
+        <span class="kbd">/</span>
+      </div>
+    </header>
+
+    <div class="log" id="log" role="list"></div>
+
+    <footer class="stage-foot">
+      <span>Base URL</span>
+      <code id="baseUrl"></code>
+    </footer>
+
+  </main>
+
+</div>
+
+<template id="routeRowTemplate">
+  <article class="row" role="listitem">
+    <button class="row-head" type="button">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="verb"></span>
+      <span class="path"></span>
+      <span class="name"></span>
+      <span class="chev" aria-hidden="true">＋</span>
+    </button>
+    <div class="row-body">
+      <p class="desc"></p>
+      <div class="fields"></div>
+      <div class="row-actions">
+        <button class="run-btn" type="button">Run request</button>
+        <code class="built-url"></code>
+      </div>
+      <div class="result" hidden>
+        <div class="result-loading" hidden>waiting on response…</div>
+        <pre class="result-json" hidden></pre>
+        <img class="result-image" hidden alt="" />
+      </div>
+    </div>
+  </article>
+</template>
+
+<script src="/assets/app.js"></script>
+</body>
+</html>
