@@ -376,7 +376,7 @@ button {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--panel);
-  padding: 10px 14px;
+  padding: 8px 8px 8px 14px;
 }
 
 .endpoint-label {
@@ -395,8 +395,26 @@ button {
   font-family: var(--mono);
   font-size: 13px;
   color: var(--text-dim);
+  padding: 9px 0;
   overflow-wrap: anywhere;
 }
+
+.copy-endpoint-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-faint);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.copy-endpoint-btn:hover { background: var(--border); color: var(--text); }
+.copy-endpoint-btn.copied { background: var(--good); color: #fff; }
 
 /* Actions -------------------------------------------------------------- */
 .row-actions {
@@ -573,6 +591,7 @@ button {
   .stage { padding: 32px 18px 60px; }
   .stage-head h1 { font-size: 28px; }
   .row-head .name { display: none; }
+  .endpoint-box { padding-left: 12px; }
   .endpoint-label { display: none; }
 }
 
